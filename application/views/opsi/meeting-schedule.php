@@ -52,19 +52,25 @@
 											<?php endforeach;?>
 										</th>
 										<th scope="row">
-											<?php if ($meet['status'] == 200) : ?>
-												<span class="text-success">Approved</span>
+											<?php if (date("Y-m-d") >= $meet['meeting_date']  && $meet['status'] == 200) : ?>
+												<span class="text-info">Terlaksana</span>
 											<?php elseif ($meet['status'] == 202) : ?>
 												<span class="text-warning">Menunggu Approve</span>
+											<?php elseif (date("Y-m-d") < $meet['meeting_date'] && $meet['status'] == 200) : ?>
+												<span class="text-success">Approved - Menunggu Pelaksanaan</span>
+											<?php elseif ($meet['status'] == 201) : ?>
+												<span class="text-danger">Rapat Ditolak</span>
 											<?php endif; ?>
 										</th>
 										<th scope="row">
-											<?php if ($user['role_id'] == $meet['initiate_id']) : ?>
+											<?php if ($user['role_id'] == $meet['initiate_id'] || $user['role_id'] == 1) : ?>
 												<a href="" data-toggle="modal" data-target="#updateMeetingModal<?= $meet['id'] ?>" class="badge badge-success">edit</a>
-												<a class="badge badge-danger" href="<?= base_url(); ?>opsi/deletemeeting/<?= $meet['id'] ?>" onclick="confirm('Batalkan meeting tersebut?')">delete</a>
+												<a class="badge badge-danger" href="<?= base_url(); ?>opsi/deletemeeting/<?= $meet['id'] ?>" onclick="confirm('Batalkan meeting tersebut?')">cancle</a>
 											<?php endif; ?>
-											<?php if ($user['role_id'] == 1 && $meet['status'] != 200) : ?>
+											<hr>
+											<?php if ($user['role_id'] == 1 && $meet['status'] == 202) : ?>
 												<a class="badge badge-primary" href="<?= base_url(); ?>opsi/approvemeeting/<?= $meet['id']?>" onclick="confirm('Approve meeting ini?')">approve</a>
+												<a class="badge badge-danger" href="<?= base_url(); ?>opsi/rejectmeeting/<?= $meet['id']?>" onclick="confirm('Tolak meeting ini?')">reject</a>
 											<?php endif; ?>
 										</th>
 									</tr>

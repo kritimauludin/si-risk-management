@@ -20,6 +20,7 @@
 				<div class="card-header py-3">
 					<h6 class="m-0 font-weight-bold text-dark d-inline"><?= $title; ?></h6>
 					<a href="" class="float-right" data-toggle="modal" data-target="#addIsuModal"><i class="fas fa-fw fa-plus"></i></a>
+					<a href="<?=base_url('pdfview/reportisu')?>" class="float-right btn btn-sm btn-outline-info mr-3" target="_blank">Generate Report</a>
 				</div>
 				<div class="card-body">
 					<div class="table-responsive">

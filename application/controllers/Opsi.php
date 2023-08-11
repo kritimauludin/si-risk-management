@@ -87,6 +87,10 @@ class Opsi extends CI_Controller
 		}
 	}
 
+	// meeting status code 
+	// 200 : approved
+	// 201 : rejected
+	// 202 : waiting
 	public function approveMeeting($id)
 	{
 		//delete isu dengan no isu tersebut
@@ -94,6 +98,15 @@ class Opsi extends CI_Controller
 		$this->db->update('meeting', ['status' => 200]);
 
 		$this->session->set_flashdata('message', 'Meeting berhasil disetujui!');
+		redirect('opsi/meeting');
+	}
+	public function rejectMeeting($id)
+	{
+		//delete isu dengan no isu tersebut
+		$this->db->where('id', $id);
+		$this->db->update('meeting', ['status' => 201]);
+
+		$this->session->set_flashdata('message', 'Meeting ditolak!');
 		redirect('opsi/meeting');
 	}
 

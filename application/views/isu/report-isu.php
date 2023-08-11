@@ -138,7 +138,7 @@
 						<td style="padding: 5px; border-bottom: 1px solid #ddd; width=250px;"><?= $tindakan["role"]; ?></td>
 						<td style="padding: 5px; border-bottom: 1px solid #ddd; text-align: center; width=185px;"><?= date('d-m-Y', strtotime($tindakan["tgl_target"]));?></td>
 						<td style="padding: 5px; border-bottom: 1px solid #ddd; text-align: center; width=180px;">-</td>
-						<td style="padding: 5px; border-bottom: 1px solid #ddd; width=100px;">-</td>
+						<td style="padding: 5px; border-bottom: 1px solid #ddd; text-align: center; width=100px;">-</td>
 						<td style="padding: 5px; border-bottom: 1px solid #ddd; width=200px;"></td>
 					</tr>;
 		<?php endif;?>
