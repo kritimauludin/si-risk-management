@@ -61,7 +61,10 @@ class Opsi extends CI_Controller
 			$this->load->view('opsi/meeting-schedule', $data);
 			$this->load->view('templates/footer');
 		} else {
-			$meetingId = abs(crc32(uniqid()));
+			$meetingId = md5(microtime());
+			// print_r($meetingId);
+
+			
 			for ($i = 0; $i < count($this->input->post('participant_id')); $i++) {
 
 				$daftarParticipant[$i] = [
@@ -173,7 +176,6 @@ class Opsi extends CI_Controller
 			$dataMeeting= [
 				'id' => $meetingId,
 				'agenda' => $this->input->post('agenda'),
-				'initiate_id' => $roleId,
 				'room_id' => $this->input->post('room_id'),
 				'meeting_date' => $this->input->post('meeting_date'),
 				'updated_at'  => $todayTime
