@@ -50,7 +50,11 @@
 						</div>
 						<div class="row">
 							<div class="col-lg-4 mb-3  text-center">
-								<a href="<?= base_url('uploads/lampiran-isu/') . $dataIsu->url_lampiran_isu ?>" target="_blank">Lihat lampiran isu</a>
+								<?php if ($dataIsu->url_lampiran_isu == null) : ?>
+									<a href="#" onclick="alert('Lampiran isu tidak tersedia!');">Lampiran isu klik disini</a>
+								<?php else : ?>
+									<a href="<?= base_url() . 'uploads/lampiran-isu/' . $dataIsu->url_lampiran_isu ?>" target="_blank">Lampiran isu klik disini</a>
+								<?php endif; ?>
 							</div>
 							<div class="col-lg-4 mb-3">
 								<select name="kemungkinan" id="kemungkinan" class="form-control mb-3" readonly>
@@ -94,29 +98,35 @@
 								</tr>
 							</thead>
 							<tbody>
-								<?php $Nomor = 1; ?> 
+								<?php $Nomor = 1; ?>
 								<?php foreach ($daftarTindakan as $tindakan) : ?>
-								<?php if ($tindakan["status"] == 200) : ?> <tr>
-									<td><?= $Nomor++ ?></td>
-									<td><?= $tindakan['uraian_tindakan'] ?></td>
-									<td><?= $tindakan["role"] ?></td>
-									<td><?= date('d-m-Y', strtotime($tindakan["tgl_target"])) ?></td>
-									<td><?= date('d-m-Y', strtotime($tindakan["tgl_aktual"])) ?></td>
-									<td><a href="<?= base_url('uploads/lampiran-tindakan/') . $tindakan['url_lampiran_tindakan'] ?>" target="_blank">Lihat lampiran tindakan</a></td>
-									<td>ditindak</td>
-									</tr>
-								<?php else : ?>
-									<tr>
-										<td><?= $Nomor++ ?></td>
-										<td>-</td>
-										<td><?= $tindakan["role"] ?></td>
-										<td><?= date('d-m-Y', strtotime($tindakan["tgl_target"])) ?></td>
-										<td>-</td>
-										<td>-</td>
-										<td>-</td>
-									</tr>
-								<?php endif; ?>
-							<?php endforeach; ?>
+									<?php if ($tindakan["status"] == 200) : ?> <tr>
+											<td><?= $Nomor++ ?></td>
+											<td><?= $tindakan['uraian_tindakan'] ?></td>
+											<td><?= $tindakan["role"] ?></td>
+											<td><?= date('d-m-Y', strtotime($tindakan["tgl_target"])) ?></td>
+											<td><?= date('d-m-Y', strtotime($tindakan["tgl_aktual"])) ?></td>
+											<td>
+												<?php if ($tindakan['url_lampiran_tindakan'] == null) : ?>
+													<a href="#" onclick="alert('Lampiran tindakan tidak tersedia!');">Lampiran tindakan klik disini</a>
+												<?php else : ?>
+													<a href="<?= base_url() . 'uploads/lampiran-tindakan/' . $tindakan['url_lampiran_tindakan'] ?>" target="_blank">Lampiran tindakan klik disini</a>
+												<?php endif; ?>
+											</td>
+											<td>ditindak</td>
+										</tr>
+									<?php else : ?>
+										<tr>
+											<td><?= $Nomor++ ?></td>
+											<td>-</td>
+											<td><?= $tindakan["role"] ?></td>
+											<td><?= date('d-m-Y', strtotime($tindakan["tgl_target"])) ?></td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+										</tr>
+									<?php endif; ?>
+								<?php endforeach; ?>
 							</tbody>
 						</table>
 					</div>

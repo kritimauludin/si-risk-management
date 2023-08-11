@@ -35,6 +35,7 @@
 									<th scope="col">Tgl. Target</th>
 									<th scope="col">Lampiran Isu</th>
 									<th scope="col">Bobot</th>
+									<th scope="col">Status</th>
 									<th scope="col">Action</th>
 
 								</tr>
@@ -66,11 +67,20 @@
 											<?php endif; ?>
 										</th>
 										<th scope="row">
+											<?php if ($isu['status_isu'] == 200) : ?>
+												<span class="text-danger">closed</span>
+											<?php elseif ($isu['status_isu'] == 201) : ?>
+												<span class="text-warning">on going</span>
+											<?php else : ?>
+												<span class="text-success">open</span>
+											<?php endif; ?>
+										</th>
+										<th scope="row">
 											<?php if ($user['role_id'] == $isu['dept_penerbit']) : ?>
 												<a href="" data-toggle="modal" data-target="#updateIsuModal<?= $isu['id'] ?>" class="badge badge-success">edit</a>
 												<a class="badge badge-danger" href="<?= base_url(); ?>isu/deletedata/<?= base64_encode($isu['no_isu']); ?>" onclick="confirm('Hapus data ISU tersebut?')">delete</a>
 											<?php endif; ?>
-												<a class="badge badge-info" href="<?= base_url(); ?>isu/lihatisu/<?= base64_encode($isu['no_isu']); ?>">lihat</a>
+											<a class="badge badge-info" href="<?= base_url(); ?>isu/lihatisu/<?= base64_encode($isu['no_isu']); ?>">lihat</a>
 											<a class="badge badge-primary" href="<?= base_url(); ?>pdfview/isu/<?= base64_encode($isu['no_isu']); ?>" target="_blank">cetak</a>
 										</th>
 									</tr>
@@ -84,6 +94,7 @@
 		</div>
 		<!-- /.container-fluid -->
 
+	</div>
 	</div>
 	<!-- End of Main Content -->
 
@@ -313,7 +324,13 @@
 									<?php foreach($tindakan[$noIsu] as $data) :?>
 										<input type="hidden" id="no_tindakan[<?=$data['id']?>]" name="no_tindakan[<?=$data['id']?>]" value="<?= $data['no_tindakan'] ?>">
 										<input type="hidden" id="role_id[<?=$data['id']?>]" name="role_id[<?=$data['id']?>]" value="<?= $data['dept_penerima'] ?>">
-										<input type="text" id="role_name[<?=$data['id']?>]" name="role_name[<?=$data['id']?>]" value="<?= $data['role'] ?>" readonly onclick="changeDivisi(<?=$data['id']?>)" class="form-control mb-3 text-center mb-3" required>
+										<input type="text" id="role_name[<?=$data['id']?>]" name="role_name[<?=$data['id']?>]" value="<?= $data['role'] ?>" readonly 
+											<?php if($data['uraian_tindakan'] == null):?>
+												onclick="changeDivisi(<?= $data['id'] ?>)"
+											<?php else : ?>
+												onclick="alert('Ubah divisi ditolak, uraian sudah diisi!')"
+											<?php endif;?>
+											 class="form-control mb-3 text-center mb-3" required>
 									<?php $i++; endforeach;?>
 								</div>
 								<!-- <div class="field-divisi"></div> -->

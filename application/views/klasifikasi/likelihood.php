@@ -48,7 +48,7 @@
                                         <th scope="row"><?= $ll['kemungkinan_terjadi'] ?> </th>
                                         <th scope="row">
                                             <a href="" data-toggle="modal" data-target="#updateLikelihoodModal<?= $ll['peringkat']; ?>" class="badge badge-success">edit</a>
-                                            <a class="badge badge-danger" href="<?= base_url(); ?>klasifikasi/deletelikelihood/<?= $ll['peringkat']; ?> " onclick="confirm('Hapus data tersebut?')">delete</a>
+                                            <!-- <a class="badge badge-danger" href="<?= base_url(); ?>klasifikasi/deletelikelihood/<?= $ll['peringkat']; ?> " onclick="confirm('Hapus data tersebut?')">delete</a> -->
                                         </th>
                                     </tr>
                                     <?php $i++ ?>

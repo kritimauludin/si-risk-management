@@ -62,11 +62,25 @@ class Isu extends CI_Controller
 
 
 		//query builder untuk mendapatkan daftar tindakan tiap isu
+		$statusIsu = 0;
 		foreach ($data['daftar_isu'] as $isu) {
-			$this->db->select('daftar_tindakan.id, daftar_tindakan.no_tindakan, dept_penerima, role');
-			$this->db->where('no_isu', $isu['no_isu']);
+			$this->db->select('daftar_tindakan.*, dept_penerima, role');
 			$this->db->join('user_role', 'user_role.id = daftar_tindakan.dept_penerima');
+			$this->db->where('daftar_tindakan.no_isu', $isu['no_isu']);
 			$data['tindakan']['' . $isu['no_isu'] . ''] = $this->db->get('daftar_tindakan')->result_array();
+
+			foreach($data['tindakan']['' . $isu['no_isu'] . ''] as $tindakan){
+				if($tindakan['status'] == 200) {
+					$statusIsu = true;
+				} else {
+					$statusIsu = false;
+				}
+			}
+
+			if($statusIsu && $isu['status_isu'] != 200){
+				$this->db->where('no_isu', $isu['no_isu']);
+				$this->db->update('daftar_isu', ['status_isu' => 200]);
+			}
 		}
 
 		$this->form_validation->set_rules('ket_dampak', 'ket_dampak', 'required');
@@ -91,11 +105,6 @@ class Isu extends CI_Controller
 
 			$this->load->library('upload', $config);
 
-			if ($this->upload->do_upload('url_lampiran_isu')) {
-				$uploaded_data = $this->upload->data();
-				$dataIsu['url_lampiran_isu'] = $uploaded_data['file_name'];
-			}
-
 			$bobot = $this->input->post('kemungkinan') * $this->input->post('dampak');
 
 			for ($i = 0; $i < count($this->input->post('role_id')); $i++) {
@@ -104,7 +113,6 @@ class Isu extends CI_Controller
 				$daftarTindakan[$i] = [
 					'no_tindakan' => $noTindakan,
 					'no_isu' => $noIsu,
-					'uraian_tindakan' => '',
 					'dept_penerima' => $this->input->post('role_id[' . $i . ']'),
 					'tgl_target' => $this->input->post('tgl_target'),
 					'status'	=> '202',
@@ -128,8 +136,11 @@ class Isu extends CI_Controller
 				'created_at'  => $todayTime
 			];
 
-			// print_r($dataIsu);
-			// print_r($tempTindakan);
+			if ($this->upload->do_upload('url_lampiran_isu')) {
+				$uploaded_data = $this->upload->data();
+				$dataIsu['url_lampiran_isu'] = $uploaded_data['file_name'];
+			}
+
 
 			$this->db->insert('daftar_isu', $dataIsu);
 			$this->db->insert_batch('daftar_tindakan', $daftarTindakan);
@@ -197,10 +208,6 @@ class Isu extends CI_Controller
 
 			$this->load->library('upload', $config);
 
-			if ($this->upload->do_upload('url_lampiran_isu')) {
-				$uploaded_data = $this->upload->data();
-				$dataIsu['url_lampiran_isu'] = $uploaded_data['file_name'];
-			}
 			$bobot = $this->input->post('kemungkinan') * $this->input->post('dampak');
 
 
@@ -216,6 +223,11 @@ class Isu extends CI_Controller
 				'terhadap' => $this->input->post('terhadap'),
 				'updated_at'  => $todayTime
 			];
+
+			if ($this->upload->do_upload('url_lampiran_isu')) {
+				$uploaded_data = $this->upload->data();
+				$dataIsu['url_lampiran_isu'] = $uploaded_data['file_name'];
+			}
 
 			$this->db->where('no_isu', $noIsu);
 			$this->db->update('daftar_isu', $dataIsu);
@@ -313,6 +325,8 @@ class Isu extends CI_Controller
 			$this->load->view('tindakan/tindakan', $data);
 			$this->load->view('templates/footer');
 		} else {
+			//proses isi tindakan
+			$noIsu = $this->input->post('no_isu');
 			$noTindakan = $this->input->post('no_tindakan');
 
 			$file_name = str_replace('.', '', $noTindakan);
@@ -324,10 +338,6 @@ class Isu extends CI_Controller
 
 			$this->load->library('upload', $config);
 
-			if ($this->upload->do_upload('url_lampiran_tindakan')) {
-				$uploaded_data = $this->upload->data();
-				$dataTindakan['url_lampiran_tindakan'] = $uploaded_data['file_name'];
-			}
 			$dataTindakan = [
 				'uraian_tindakan' => $this->input->post('uraian_tindakan'),
 				'dept_penerima' => $roleId,
@@ -336,12 +346,82 @@ class Isu extends CI_Controller
 				'created_at'  => $todayTime
 			];
 
-			// print_r($dataTindakan);
-			// print_r($tempTindakan);
+			if ($this->upload->do_upload('url_lampiran_tindakan')) {
+				$uploaded_data = $this->upload->data();
+				$dataTindakan['url_lampiran_tindakan'] = $uploaded_data['file_name'];
+			}
 
 			$this->db->where('no_tindakan', $noTindakan);
 			$this->db->update('daftar_tindakan', $dataTindakan);
+
+			$this->db->where('no_isu', $noIsu);
+			$this->db->update('daftar_isu', ['status_isu' => 201]);
 			$this->session->set_flashdata('message', 'Tindakan divisimu berhasil dicatat!');
+			redirect('isu/tindakan');
+		}
+	}
+	public function editTindakan()
+	{
+		$data['title'] = 'Daftar Tindakan';
+		$data['user'] = $this->db->get_where('user', ['email' =>
+		$this->session->userdata('email')])->row_array();
+
+		$todayTime = date("Y-m-d H:i:s", time());
+		$roleId = $data['user']['role_id'];
+
+		$data['notifications'] =  notification_issue($roleId);
+
+		$data['daftar_kemungkinan'] = $this->db->get('daftar_kemungkinan')->result_array();
+		$data['daftar_dampak'] = $this->db->get('daftar_dampak')->result_array();
+
+		$this->db->where('role !=', 'admin');
+		$this->db->where('id !=', $data['user']['role_id']);
+		$data['roles'] = $this->db->get('user_role')->result_array();
+
+		//query builder for 'daftar isu'
+		$this->db->select('*');
+		$this->db->from('daftar_tindakan');
+		$this->db->join('daftar_isu', 'daftar_isu.no_isu = daftar_tindakan.no_isu');
+		$this->db->join('user_role', 'daftar_isu.dept_penerbit = user_role.id');
+		$this->db->where('daftar_tindakan.dept_penerima =', $roleId);
+		$data['daftar_tindakan'] =  $this->db->get()->result_array();
+
+		$this->form_validation->set_rules('uraian_tindakan', 'uraian_tindakan', 'required');
+		$this->form_validation->set_rules('tgl_aktual', 'tgl_aktual', 'required');
+		$this->form_validation->set_rules('url_lampiran_tindakan', 'url_lampiran_tindakan', 'file');
+		if ($this->form_validation->run() == false) {
+			$this->load->view('templates/header', $data);
+			$this->load->view('templates/sidebar', $data);
+			$this->load->view('templates/topbar', $data);
+			$this->load->view('tindakan/tindakan', $data);
+			$this->load->view('templates/footer');
+		} else {
+			//proses isi tindakan
+			$noTindakan = $this->input->post('no_tindakan');
+
+			$file_name = str_replace('.', '', $noTindakan);
+			$config['upload_path']          = FCPATH . 'uploads/lampiran-tindakan';
+			$config['allowed_types']        = 'pdf|jpg|jpeg|png';
+			$config['file_name']            = $file_name;
+			$config['overwrite']            = true;
+			$config['max_size']             = 5024; // 5MB
+
+			$this->load->library('upload', $config);
+
+			$dataTindakan = [
+				'uraian_tindakan' => $this->input->post('uraian_tindakan'),
+				'tgl_aktual' => $this->input->post('tgl_aktual'),
+				'updated_at'  => $todayTime
+			];
+
+			if ($this->upload->do_upload('update_lampiran_tindakan')) {
+				$uploaded_data = $this->upload->data();
+				$dataTindakan['url_lampiran_tindakan'] = $uploaded_data['file_name'];
+			}
+
+			$this->db->where('no_tindakan', $noTindakan);
+			$this->db->update('daftar_tindakan', $dataTindakan);
+			$this->session->set_flashdata('message', 'Tindakan divisimu berhasil diubah!');
 			redirect('isu/tindakan');
 		}
 	}

@@ -42,7 +42,7 @@
                                         <th scope="row"><?= $ll['deskripsi'] ?> </th>
                                         <th scope="row">
                                             <a href="" data-toggle="modal" data-target="#updateImpactModal<?= $ll['peringkat']; ?>" class="badge badge-success">edit</a>
-                                            <a class="badge badge-danger" href="<?= base_url(); ?>klasifikasi/deleteImpact/<?= $ll['peringkat']; ?> " onclick="confirm('Hapus data tersebut?')">delete</a>
+                                            <!-- <a class="badge badge-danger" href="<?= base_url(); ?>klasifikasi/deleteImpact/<?= $ll['peringkat']; ?> " onclick="confirm('Hapus data tersebut?')">delete</a> -->
                                         </th>
                                     </tr>
                                     <?php $i++ ?>
