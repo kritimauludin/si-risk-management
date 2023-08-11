@@ -24,7 +24,7 @@
 	<div class="card mb-3" style="max-width: 540px;">
 		<div class="row no-gutters">
 			<div class="col-md-4">
-				<img src="<?= base_url('assets/img/profile/') . $user['image']; ?> " class="card-img" alt="...">
+				<img src="<?= base_url('assets/img/profile/') . $user['image']; ?> " class="card-img" alt="..." height="100%">
 			</div>
 			<div class="col-md-8">
 				<div class="card-body">
@@ -66,19 +66,22 @@
 					<label for="update_alamat">Alamat</label>
 					<textarea name="update_alamat" id="update_alamat" rows="5" class="form-control" required><?= $user['alamat'] ?></textarea>
 				</div>
+				<div class=" form-group">
+					<input type="file" name="image" id="image" class="form-control">
+					<span class="text-danger text-xs">profile bersifat optional dan hanya(png, jpeg, jpg)</span>
+				</div>
 				<div class=" form-group mb-3">
 					<input type="password" class="form-control" id="update_password" name="update_password" placeholder="Password baru">
 					<p class="text-danger text-sm">hanya diisi jika ingin merubah password</p>
 				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					<button type="submit" class="btn btn-primary">Ubah</button>
+				</div>
+				</form>
 			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-				<button type="submit" class="btn btn-primary">Ubah</button>
-			</div>
-			</form>
 		</div>
 	</div>
-</div>
 
 </div>
 <!-- End of Main Content -->

@@ -187,8 +187,8 @@
 										<input type="text" name="tgl_aktual" id="tgl_aktual" class="form-control mb-3" value=" <?=date("Y-m-d H:i:s", time()); ?>" readonly required>
 									</div>
 									<div class="col-lg-12  text-center">
-										<input type="file" name="url_lampiran_tindakan" id="url_lampiran_tindakan" class="form-control" placeholder="Lampiran (wajib)">
-										<span class="text-danger text-xs">lampiran bersifat wajib dan hanya(pdf, png, jpeg, jpg)</span>
+										<input type="file" name="url_lampiran_tindakan" id="url_lampiran_tindakan" class="form-control" placeholder="Lampiran (optional)">
+										<span class="text-danger text-xs">lampiran bersifat optional dan hanya(pdf, png, jpeg, jpg)</span>
 									</div>
 								</div>
 							</div>

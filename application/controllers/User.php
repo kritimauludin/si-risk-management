@@ -45,13 +45,27 @@ class User extends CI_Controller
         } else {
             $id = $this->input->post('id');
 			$password = $this->input->post('update_password');
-
-            $data = [
+			
+			$data = [
                 'name' => $this->input->post('update_name'),
                 'email'  => $this->input->post('update_email'),
                 'no_hp' => $this->input->post('update_no_hp'),
                 'alamat' => $this->input->post('update_alamat')
             ];
+
+			$file_name = str_replace('.', '', uniqid());
+			$config['upload_path']          = FCPATH . 'assets/img/profile';
+			$config['allowed_types']        = 'jpg|jpeg|png';
+			$config['file_name']            = $file_name;
+			$config['overwrite']            = true;
+			$config['max_size']             = 5024; // 5MB
+
+			$this->load->library('upload', $config);
+
+			if ($this->upload->do_upload('image')) {
+				$uploaded_data = $this->upload->data();
+				$data['image'] = $uploaded_data['file_name'];
+			}
 
 			if($password != ''){
 				$password_hash = password_hash($password, PASSWORD_DEFAULT);

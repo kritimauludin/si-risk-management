@@ -155,8 +155,8 @@
 					</div>
 					<div class="row">
 						<div class="col-lg-4 mb-3  text-center">
-							<input type="file" name="url_lampiran_isu" id="url_lampiran_isu" class="form-control" placeholder="Lampiran (wajib)">
-							<span class="text-danger text-xs">lampiran bersifat wajib dan hanya(pdf, png, jpeg, jpg)</span>
+							<input type="file" name="url_lampiran_isu" id="url_lampiran_isu" class="form-control" placeholder="Lampiran (optional)">
+							<span class="text-danger text-xs">lampiran bersifat optional dan hanya(pdf, png, jpeg, jpg)</span>
 						</div>
 						<div class="col-lg-4 mb-3">
 							<select name="kemungkinan" id="kemungkinan" class="form-control mb-3" required>
